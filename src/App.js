@@ -34,14 +34,20 @@ const App = function() {
 };
 
 const Search = function() {
+  const [searchTerm, setSearchTerm] = React.useState('');
+
   const handleChange = function(event){
     console.log(event.target.value);
+    setSearchTerm(event.target.value);
   };
 
   return (
     <div>
       <label htmlFor="search">Search: </label>
       <input type="text" id="search" onChange={handleChange} />
+      <p>
+        Searching for <strong>{searchTerm}</strong>
+      </p>
     </div>
   );
 };

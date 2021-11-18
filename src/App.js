@@ -20,7 +20,16 @@ const App = function() {
     },
   ];
 
-  const [searchTerm, setSearchTerm] = React.useState('React');
+  const [searchTerm, setSearchTerm] = React.useState(
+    localStorage.getItem('search') || 'React'
+  );
+
+  React.useEffect(
+    function() {
+      localStorage.setItem('search', searchTerm);
+    },
+    [searchTerm]
+  );
 
   const handleSearch = (event) => (
     setSearchTerm(event.target.value)
@@ -28,7 +37,7 @@ const App = function() {
 
   const searchedStories = stories.filter((story) => 
    story.title.toLowerCase().includes(searchTerm.toLowerCase())
-   );
+  );
 
   return (
     <div>
@@ -56,12 +65,12 @@ const Search = ({ search, onSearch }) => (
 );
 
 const List = ({ list }) => (
-    <ul>
-      {list.map((item) => (
-        <Item key={item.objectID} item={item} />
-      ))}
-    </ul>
-  );
+  <ul>
+    {list.map((item) => (
+      <Item key={item.objectID} item={item} />
+    ))}
+  </ul>
+);
 
 const Item = ({ item }) => (
   <li>

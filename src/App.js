@@ -1,17 +1,17 @@
-import * as React from 'react';
+import React, {useState, useEffect} from 'react'
 
 const useSemiPersistantState = function(key, initialState) {
-  const [value, setValue] = React.useState(
+  const [value, setValue] = useState(
     localStorage.getItem(key) || initialState
-  );
+  )
 
-  React.useEffect(() => {
-    localStorage.setItem(key, value);
+  useEffect(() => {
+    localStorage.setItem(key, value)
     }, [value, key]
-  );
+  )
 
-  return [value, setValue];
-};
+  return [value, setValue]
+}
 
 const App = function() {
   const stories = [
@@ -31,42 +31,39 @@ const App = function() {
       points: 5,
       objectID: 1,
     },
-  ];
+  ]
 
-  const [searchTerm, setSearchTerm] = useSemiPersistantState('search', 'React');
+  const [searchTerm, setSearchTerm] = useSemiPersistantState('search', 'React')
 
   const handleSearch = (event) => (
     setSearchTerm(event.target.value)
-  );
+  )
 
   const searchedStories = stories.filter((story) => 
    story.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  )
 
   return (
     <div>
       <h1>My Hacker Stories</h1>
 
-      <Search search={searchTerm} onSearch={handleSearch} />
-
+      <InputWithLabel id="Search" label="Search" value={searchTerm} onInputChange={handleSearch} />
       <hr />
 
       <List list={searchedStories} />
     </div>
-  );
-};
+  )
+}
 
-const Search = ({ search, onSearch }) => (
-  <React.Fragment>
-    <label htmlFor="search">Search: </label>
-    <input
-      type="text"
-      id="search"
-      value={search}
-      onChange={onSearch}
-    />
-  </React.Fragment>
-);
+const InputWithLabel = function({type="text", id, label, value, onInputChange}) {
+  return (
+    <>
+      <label htmlFor={id}>{label}</label>
+      &nbsp;
+      <input type={type} id={id} value={value} onChange={onInputChange} />
+    </>
+  )
+}
 
 const List = ({ list }) => (
   <ul>
@@ -74,7 +71,7 @@ const List = ({ list }) => (
       <Item key={item.objectID} item={item} />
     ))}
   </ul>
-);
+)
 
 const Item = ({ item }) => (
   <li>
@@ -83,6 +80,6 @@ const Item = ({ item }) => (
     <span> {item.num_comments}</span>
     <span> {item.points}</span>
   </li>
-);
+)
 
-export default App;
+export default App

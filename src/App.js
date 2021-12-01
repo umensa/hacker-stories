@@ -47,7 +47,9 @@ const App = function() {
     <div>
       <h1>My Hacker Stories</h1>
 
-      <InputWithLabel id="Search" label="Search" value={searchTerm} onInputChange={handleSearch} />
+      <InputWithLabel id="Search" label="Search" value={searchTerm} onInputChange={handleSearch} >
+        <strong>Search :</strong>
+      </InputWithLabel>
       <hr />
 
       <List list={searchedStories} />
@@ -55,10 +57,10 @@ const App = function() {
   )
 }
 
-const InputWithLabel = function({type="text", id, label, value, onInputChange}) {
+const InputWithLabel = function({type="text", id, value, onInputChange, children}) {
   return (
     <>
-      <label htmlFor={id}>{label}</label>
+      <label htmlFor={id}>{children}</label>
       &nbsp;
       <input type={type} id={id} value={value} onChange={onInputChange} />
     </>

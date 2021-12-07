@@ -1,25 +1,87 @@
-import logo from './logo.svg';
-import './App.css';
+import React, {useState, useEffect} from 'react'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const useSemiPersistantState = function(key, initialState) {
+  const [value, setValue] = useState(
+    localStorage.getItem(key) || initialState
+  )
+
+  useEffect(() => {
+    localStorage.setItem(key, value)
+    }, [value, key]
+  )
+
+  return [value, setValue]
 }
 
-export default App;
+const App = function() {
+  const stories = [
+    {
+      title: 'React',
+      url: 'https://reactjs.org',
+      author: 'Jordan Walke',
+      num_comments: 3,
+      points: 4,
+      objectID: 0,
+    },
+    {
+      title: 'Redux',
+      url: 'https://redux.js.org',
+      author: 'Dan Abramov, Andrew Clark',
+      num_comments: 2,
+      points: 5,
+      objectID: 1,
+    },
+  ]
+
+  const [searchTerm, setSearchTerm] = useSemiPersistantState('search', 'React')
+
+  const handleSearch = (event) => (
+    setSearchTerm(event.target.value)
+  )
+
+  const searchedStories = stories.filter((story) => 
+   story.title.toLowerCase().includes(searchTerm.toLowerCase())
+  )
+
+  return (
+    <div>
+      <h1>My Hacker Stories</h1>
+
+      <InputWithLabel id="Search" label="Search" value={searchTerm} onInputChange={handleSearch} >
+        <strong>Search :</strong>
+      </InputWithLabel>
+      <hr />
+
+      <List list={searchedStories} />
+    </div>
+  )
+}
+
+const InputWithLabel = function({type="text", id, value, onInputChange, children}) {
+  return (
+    <>
+      <label htmlFor={id}>{children}</label>
+      &nbsp;
+      <input type={type} id={id} value={value} onChange={onInputChange} />
+    </>
+  )
+}
+
+const List = ({ list }) => (
+  <ul>
+    {list.map((item) => (
+      <Item key={item.objectID} item={item} />
+    ))}
+  </ul>
+)
+
+const Item = ({ item }) => (
+  <li>
+    <span><a href={item.url}>{item.title}</a></span>
+    <span> {item.author}</span>
+    <span> {item.num_comments}</span>
+    <span> {item.points}</span>
+  </li>
+)
+
+export default App

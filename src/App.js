@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useRef} from 'react'
 
 const useSemiPersistantState = function(key, initialState) {
   const [value, setValue] = useState(
@@ -47,7 +47,13 @@ const App = function() {
     <div>
       <h1>My Hacker Stories</h1>
 
-      <InputWithLabel id="Search" label="Search" value={searchTerm} onInputChange={handleSearch} >
+      <InputWithLabel
+        id="Search"
+        label="Search"
+        value={searchTerm}
+        isFocused
+        onInputChange={handleSearch}
+      >
         <strong>Search :</strong>
       </InputWithLabel>
       <hr />
@@ -57,12 +63,20 @@ const App = function() {
   )
 }
 
-const InputWithLabel = function({type="text", id, value, onInputChange, children}) {
+const InputWithLabel = function({type="text", id, value, onInputChange, isFocused, children}) {
+  const inputRef = useRef()
+
+  useEffect(function(){
+    if (isFocused && inputRef.current) {
+      inputRef.current.focus()
+    }
+  }, [isFocused])
+
   return (
     <>
       <label htmlFor={id}>{children}</label>
       &nbsp;
-      <input type={type} id={id} value={value} onChange={onInputChange} />
+      <input ref={inputRef} type={type} id={id} value={value} onChange={onInputChange} />
     </>
   )
 }

@@ -1,5 +1,18 @@
 import * as React from 'react';
 
+const useSemiPersistantState = function(key, initialState) {
+  const [value, setValue] = React.useState(
+    localStorage.getItem(key) || initialState
+  );
+
+  React.useEffect(() => {
+    localStorage.setItem(key, value);
+    }, [value, key]
+  );
+
+  return [value, setValue];
+};
+
 const App = function() {
   const stories = [
     {
@@ -20,7 +33,7 @@ const App = function() {
     },
   ];
 
-  const [searchTerm, setSearchTerm] = React.useState('React');
+  const [searchTerm, setSearchTerm] = useSemiPersistantState('search', 'React');
 
   const handleSearch = (event) => (
     setSearchTerm(event.target.value)
@@ -28,7 +41,7 @@ const App = function() {
 
   const searchedStories = stories.filter((story) => 
    story.title.toLowerCase().includes(searchTerm.toLowerCase())
-   );
+  );
 
   return (
     <div>
@@ -44,7 +57,7 @@ const App = function() {
 };
 
 const Search = ({ search, onSearch }) => (
-  <div>
+  <React.Fragment>
     <label htmlFor="search">Search: </label>
     <input
       type="text"
@@ -52,16 +65,16 @@ const Search = ({ search, onSearch }) => (
       value={search}
       onChange={onSearch}
     />
-  </div>
+  </React.Fragment>
 );
 
 const List = ({ list }) => (
-    <ul>
-      {list.map((item) => (
-        <Item key={item.objectID} item={item} />
-      ))}
-    </ul>
-  );
+  <ul>
+    {list.map((item) => (
+      <Item key={item.objectID} item={item} />
+    ))}
+  </ul>
+);
 
 const Item = ({ item }) => (
   <li>
